@@ -24,6 +24,14 @@ jobs:
         run: npm run eslint
       - name: Make a prod build
         run: npm run build
+      - name: Notification if build fails
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@1399c1b2d57cc05894d506d2cfdc33c5f012b993
+        with:
+          severity: error
+          text: 'Build failed'
+          description: 'commit ${{github.event.commits[0].url}} by ${{ github.event.pusher.name }} broke the build :('
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Tests
         run: npm run test
       - name: Install Playwright and deps
@@ -35,6 +43,14 @@ jobs:
         run: flyctl deploy --remote-only
         env: 
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      - name: Notification when dployment succeeds
+        if: ${{ success() && github.event_name == 'push' }}
+        uses: rjstone/discord-webhook-notify@1399c1b2d57cc05894d506d2cfdc33c5f012b993
+        with:
+          severity: info
+          text: 'Deployment successful'
+          description: 'commit ${{github.event.commits[0].url}} by ${{ github.event.pusher.name }} deployed successfully'
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-20.04
@@ -42,7 +58,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
         if: ${{ github.event_name == 'push' && !contains(toJson(join(github.event.commits.*.message)), '#skip') }}
-        uses: anothrNick/github-tag-action@1.71.0
+        uses: anothrNick/github-tag-action@f278d49d30cdd8775cc3e7dd00b5ee11686ee297
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
