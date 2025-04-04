@@ -26,7 +26,7 @@ jobs:
         run: npm run build
       - name: Notification if build fails
         if: ${{ failure() }}
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@1.0.4
         with:
           severity: error
           text: 'Build failed'
@@ -45,7 +45,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       - name: Notification when deployment succeeds
         if: ${{ success() && github.event_name == 'push' }}
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@1.0.4
         with:
           severity: info
           text: 'Deployment successful'
