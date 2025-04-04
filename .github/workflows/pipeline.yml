@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  pull-requests:
+  pull_requests:
     branches: [main]
     types: [opened, synchronize]
 
@@ -31,6 +31,7 @@ jobs:
       - name: E2E Tests
         run: npm run test:e2e
       - name: Deployment
+        if: ${{ github.event_name == 'push' }}
         run: flyctl deploy --remote-only
         env: 
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
