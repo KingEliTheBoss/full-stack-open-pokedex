@@ -15,7 +15,7 @@ jobs:
           follow-redirect: false
           max-attempts: 2
           retry-delay: 5s
-      - name: Failure:
+      - name: Failure
         if: ${{ failure() }}
         uses: rjstone/discord-webhook-notify@1399c1b2d57cc05894d506d2cfdc33c5f012b993
         with:
