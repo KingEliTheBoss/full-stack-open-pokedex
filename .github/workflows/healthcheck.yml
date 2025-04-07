@@ -1,0 +1,26 @@
+name: Healthcheck
+
+on:
+  schedule:
+    - cron: '0 23 * * *'
+
+jobs:
+  healthchek:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check fly.io project status
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://fso-pokedex-elisal.fly.dev
+          follow-redirect: false
+          max-attempts: 2
+          retry-delay: 5s
+      - name: Failure:
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@1399c1b2d57cc05894d506d2cfdc33c5f012b993
+        with:
+          severity: error
+          text: 'Healthcheck failed'
+          description: 'Project https://fso-pokedex-elisal.fly.dev/ is not working'
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
