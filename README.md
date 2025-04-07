@@ -1,3 +1,7 @@
+Link to repository of exercises 11.20 and 11.21
+https://github.com/KingEliTheBoss/FSO-OwnPipeline
+
+
 # Full Stack open CI/CD
 
 This repository is used for the CI/CD module of the Full stack open course
